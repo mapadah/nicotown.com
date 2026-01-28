@@ -19,6 +19,19 @@
             background: #000;
             color: #fff;
             overflow-x: hidden;
+            overflow-y: auto;
+            min-height: 100vh;
+        }
+
+        #lsd-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.5;
         }
 
         header {
@@ -38,6 +51,18 @@
             letter-spacing: 0.1em;
         }
 
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: 1px solid #fff;
+            color: #fff;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            cursor: pointer;
+            font-family: 'Gowun Batang', serif;
+            letter-spacing: 0.05em;
+        }
+
         nav {
             display: flex;
             gap: 3rem;
@@ -50,6 +75,7 @@
             opacity: 0.7;
             transition: opacity 0.3s ease;
             letter-spacing: 0.05em;
+            cursor: pointer;
         }
 
         nav a:hover {
@@ -64,6 +90,8 @@
             align-items: center;
             text-align: center;
             padding: 2rem 4%;
+            position: relative;
+            z-index: 10;
         }
 
         .hero-title {
@@ -78,27 +106,8 @@
             font-size: clamp(1rem, 2vw, 1.3rem);
             opacity: 0.6;
             max-width: 600px;
-            margin-bottom: 4rem;
             line-height: 1.6;
             font-weight: 400;
-        }
-
-        .btn {
-            padding: 0.9rem 2.5rem;
-            font-size: 0.95rem;
-            background: transparent;
-            color: #fff;
-            border: 1px solid #fff;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            font-family: 'Gowun Batang', serif;
-            letter-spacing: 0.05em;
-        }
-
-        .btn:hover {
-            background: #fff;
-            color: #000;
         }
 
         footer {
@@ -107,21 +116,118 @@
             font-size: 0.85rem;
             opacity: 0.5;
             letter-spacing: 0.05em;
+            position: relative;
+            z-index: 10;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #000;
+            border: 1px solid #fff;
+            padding: 3rem;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+            border: none;
+            background: none;
+            color: #fff;
+            font-family: 'Gowun Batang', serif;
+        }
+
+        .modal-close:hover {
+            opacity: 1;
+        }
+
+        .modal-text {
+            font-size: 1.5rem;
+            letter-spacing: 0.05em;
         }
 
         @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+            
             nav {
                 display: none;
+                position: fixed;
+                top: 70px;
+                right: 4%;
+                flex-direction: column;
+                gap: 1.5rem;
+                background: #000;
+                border: 1px solid #fff;
+                padding: 1.5rem;
+                z-index: 999;
+            }
+            
+            nav.active {
+                display: flex;
+            }
+            
+            header {
+                padding: 1.5rem 6%;
+            }
+            
+            .logo {
+                font-size: 1rem;
+            }
+            
+            .hero {
+                padding: 2rem 6%;
+            }
+            
+            .modal-content {
+                padding: 2rem;
+                width: 85%;
+            }
+            
+            .modal-text {
+                font-size: 1.2rem;
+            }
+            
+            footer {
+                padding: 2rem 6%;
             }
         }
     </style>
 </head>
 <body>
+    <canvas id="lsd-canvas"></canvas>
+    
     <header>
         <div class="logo">NICOTOWN</div>
-        <nav>
-            <a href="#about">About</a>
-            <a href="#contact">Contact</a>
+        <button class="mobile-menu-btn" onclick="toggleMenu()">Menu</button>
+        <nav id="nav">
+            <a onclick="openModal('about')">About</a>
+            <a onclick="openModal('contact')">Contact</a>
         </nav>
     </header>
 
@@ -137,5 +243,143 @@
     <footer>
         <p>&copy; 2026 NicoTown</p>
     </footer>
+
+    <div id="about-modal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('about')">&times;</button>
+            <p class="modal-text">i make stuff</p>
+        </div>
+    </div>
+
+    <div id="contact-modal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('contact')">&times;</button>
+            <p class="modal-text">four.net</p>
+        </div>
+    </div>
+
+    <script>
+        // LSD Virus Plasma Rainbow Effect (Optimized)
+        const canvas = document.getElementById('lsd-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Lower resolution for better performance
+        const scale = 4;
+        canvas.width = window.innerWidth / scale;
+        canvas.height = window.innerHeight / scale;
+        canvas.style.width = window.innerWidth + 'px';
+        canvas.style.height = window.innerHeight + 'px';
+        
+        // Disable image smoothing for sharper pixels
+        ctx.imageSmoothingEnabled = false;
+        
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth / scale;
+            canvas.height = window.innerHeight / scale;
+            canvas.style.width = window.innerWidth + 'px';
+            canvas.style.height = window.innerHeight + 'px';
+        });
+        
+        let time = 0;
+        
+        function hslToRgb(h, s, l) {
+            let r, g, b;
+            if (s === 0) {
+                r = g = b = l;
+            } else {
+                const hue2rgb = (p, q, t) => {
+                    if (t < 0) t += 1;
+                    if (t > 1) t -= 1;
+                    if (t < 1/6) return p + (q - p) * 6 * t;
+                    if (t < 1/2) return q;
+                    if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+                    return p;
+                };
+                const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+                const p = 2 * l - q;
+                r = hue2rgb(p, q, h + 1/3);
+                g = hue2rgb(p, q, h);
+                b = hue2rgb(p, q, h - 1/3);
+            }
+            return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+        }
+        
+        function drawPlasma() {
+            const imageData = ctx.createImageData(canvas.width, canvas.height);
+            const data = imageData.data;
+            
+            for (let y = 0; y < canvas.height; y++) {
+                for (let x = 0; x < canvas.width; x++) {
+                    const index = (y * canvas.width + x) * 4;
+                    
+                    // Plasma algorithm with multiple sine waves
+                    const value = 
+                        Math.sin(x / 12 + time) +
+                        Math.sin(y / 8 + time) +
+                        Math.sin((x + y) / 10 + time) +
+                        Math.sin(Math.sqrt(x * x + y * y) / 15 + time);
+                    
+                    // Normalize to 0-1 range
+                    const normalized = (value + 4) / 8;
+                    
+                    // Convert to HSL color (full saturation, medium lightness)
+                    const hue = normalized;
+                    const [r, g, b] = hslToRgb(hue, 1, 0.5);
+                    
+                    data[index] = r;
+                    data[index + 1] = g;
+                    data[index + 2] = b;
+                    data[index + 3] = 255;
+                }
+            }
+            
+            ctx.putImageData(imageData, 0, 0);
+            time += 0.03;
+            requestAnimationFrame(drawPlasma);
+        }
+        
+        drawPlasma();
+        
+        // Mobile menu toggle
+        function toggleMenu() {
+            const nav = document.getElementById('nav');
+            nav.classList.toggle('active');
+        }
+        
+        // Modal functions
+        function openModal(type) {
+            document.getElementById(type + '-modal').classList.add('active');
+            // Close mobile menu when opening modal
+            const nav = document.getElementById('nav');
+            nav.classList.remove('active');
+        }
+
+        function closeModal(type) {
+            document.getElementById(type + '-modal').classList.remove('active');
+        }
+
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                }
+            });
+            
+            // Touch support for mobile
+            modal.addEventListener('touchstart', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                }
+            });
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal').forEach(modal => {
+                    modal.classList.remove('active');
+                });
+            }
+        });
+    </script>
 </body>
 </html>
