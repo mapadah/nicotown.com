@@ -31,9 +31,8 @@
             font-family: 'Gowun Batang', serif;
             background: #000;
             color: #fff;
-            overflow-x: hidden;
-            overflow-y: auto;
-            min-height: 100vh;
+            overflow: hidden;
+            height: 100vh;
         }
 
         #lsd-canvas {
@@ -96,7 +95,7 @@
         }
 
         .hero {
-            min-height: 100vh;
+            height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -124,12 +123,15 @@
         }
 
         footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
             text-align: center;
-            padding: 3rem 4%;
+            padding: 1.5rem 4%;
             font-size: 0.85rem;
             opacity: 0.5;
             letter-spacing: 0.05em;
-            position: relative;
             z-index: 10;
         }
 
@@ -227,7 +229,7 @@
             }
             
             footer {
-                padding: 2rem 6%;
+                padding: 1.5rem 6%;
             }
         }
     </style>
