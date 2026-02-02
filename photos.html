@@ -66,27 +66,6 @@
             letter-spacing: 0.1em;
         }
 
-        .upload-btn {
-            background: none;
-            border: 1px solid #fff;
-            color: #fff;
-            padding: 0.5rem 1rem;
-            font-size: 0.9rem;
-            cursor: pointer;
-            font-family: 'Gowun Batang', serif;
-            letter-spacing: 0.05em;
-            transition: all 0.3s ease;
-        }
-
-        .upload-btn:hover {
-            background: #fff;
-            color: #000;
-        }
-
-        #photo-input {
-            display: none;
-        }
-
         .container {
             position: relative;
             z-index: 10;
@@ -141,25 +120,6 @@
             opacity: 0.7;
         }
 
-        .add-album-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px dashed rgba(255, 255, 255, 0.3);
-            border-radius: 10px;
-            padding: 1.5rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            opacity: 0.7;
-        }
-
-        .add-album-btn:hover {
-            opacity: 1;
-            border-color: #fff;
-        }
-
         .photos-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -173,6 +133,7 @@
             overflow: hidden;
             border: 2px solid rgba(255, 255, 255, 0.3);
             transition: all 0.3s ease;
+            cursor: pointer;
         }
 
         .photo-card:hover {
@@ -186,92 +147,26 @@
             object-fit: cover;
         }
 
-        .delete-photo {
+        .photo-name {
             position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
+            bottom: 0;
+            left: 0;
+            right: 0;
             background: rgba(0, 0, 0, 0.7);
-            border: none;
-            color: #fff;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            cursor: pointer;
+            padding: 0.5rem;
+            font-size: 0.9rem;
             opacity: 0;
             transition: opacity 0.3s ease;
         }
 
-        .photo-card:hover .delete-photo {
+        .photo-card:hover .photo-name {
             opacity: 1;
-        }
-
-        .delete-photo:hover {
-            background: #f00;
         }
 
         .empty-state {
             text-align: center;
             padding: 4rem 2rem;
             opacity: 0.5;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: #000;
-            border: 1px solid #fff;
-            padding: 2rem;
-            max-width: 400px;
-            width: 90%;
-            text-align: center;
-        }
-
-        .modal-input {
-            width: 100%;
-            padding: 0.8rem;
-            margin: 1rem 0;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: #fff;
-            font-family: 'Gowun Batang', serif;
-            font-size: 1rem;
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            margin-top: 1rem;
-        }
-
-        .modal-btn {
-            padding: 0.8rem 2rem;
-            border: 1px solid #fff;
-            background: none;
-            color: #fff;
-            cursor: pointer;
-            font-family: 'Gowun Batang', serif;
-            transition: all 0.3s ease;
-        }
-
-        .modal-btn:hover {
-            background: #fff;
-            color: #000;
         }
 
         @media (max-width: 768px) {
@@ -295,43 +190,20 @@
     <header>
         <a href="index.html" class="back-btn" title="Back">←</a>
         <div class="logo">PHOTOS</div>
-        <button class="upload-btn" onclick="document.getElementById('photo-input').click()">Upload</button>
-        <input type="file" id="photo-input" accept="image/*" multiple>
+        <span></span>
     </header>
 
     <div class="container">
         <div class="albums-section">
             <h2 class="section-title">Albums</h2>
-            <div class="albums-grid" id="albums-grid">
-                <div class="album-card active" data-album="all">
-                    <div class="album-name">All Photos</div>
-                    <div class="album-count" id="all-count">0 photos</div>
-                </div>
-                <div class="add-album-btn" onclick="openNewAlbumModal()">+</div>
-            </div>
+            <div class="albums-grid" id="albums-grid"></div>
         </div>
 
-        <div id="photos-section">
-            <div class="empty-state">
-                <p>No photos yet. Upload some to get started!</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- New Album Modal -->
-    <div id="album-modal" class="modal">
-        <div class="modal-content">
-            <h3>Create New Album</h3>
-            <input type="text" id="album-name-input" class="modal-input" placeholder="Album name">
-            <div class="modal-buttons">
-                <button class="modal-btn" onclick="closeAlbumModal()">Cancel</button>
-                <button class="modal-btn" onclick="createAlbum()">Create</button>
-            </div>
-        </div>
+        <div id="photos-section"></div>
     </div>
 
     <script>
-        // LSD Virus Plasma Rainbow Effect (Same as main page)
+        // LSD Virus Plasma Rainbow Effect
         const canvas = document.getElementById('lsd-canvas');
         const ctx = canvas.getContext('2d');
         
@@ -406,77 +278,67 @@
         
         drawPlasma();
 
-        // Photo Gallery Logic
-        let photos = JSON.parse(localStorage.getItem('nicotown-photos')) || [];
-        let albums = JSON.parse(localStorage.getItem('nicotown-albums')) || [];
+        // PHOTO GALLERY DATA - ADD YOUR PHOTOS HERE
+        const albums = [
+            {
+                id: 'all',
+                name: 'All Photos'
+            },
+            {
+                id: 'nature',
+                name: 'Nature'
+            },
+            {
+                id: 'urban',
+                name: 'Urban'
+            },
+            {
+                id: 'portraits',
+                name: 'Portraits'
+            }
+            // Add more albums here
+        ];
+
+        const photos = [
+            // Example photos - replace with your own
+            { path: 'photos/nature1.jpg', name: 'Sunset', album: 'nature' },
+            { path: 'photos/nature2.jpg', name: 'Mountains', album: 'nature' },
+            { path: 'photos/urban1.jpg', name: 'City Lights', album: 'urban' },
+            { path: 'photos/urban2.jpg', name: 'Street Art', album: 'urban' },
+            { path: 'photos/portrait1.jpg', name: 'Portrait 1', album: 'portraits' },
+            { path: 'photos/portrait2.jpg', name: 'Portrait 2', album: 'portraits' }
+            // Add more photos here with: { path: 'photos/yourphoto.jpg', name: 'Photo Name', album: 'album-id' }
+        ];
+
         let currentAlbum = 'all';
-
-        const photoInput = document.getElementById('photo-input');
-        const photosSection = document.getElementById('photos-section');
         const albumsGrid = document.getElementById('albums-grid');
-
-        // Upload photos
-        photoInput.addEventListener('change', function(e) {
-            const files = Array.from(e.target.files);
-            
-            files.forEach(file => {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const photo = {
-                        id: Date.now() + Math.random(),
-                        data: event.target.result,
-                        album: currentAlbum === 'all' ? 'default' : currentAlbum,
-                        timestamp: Date.now()
-                    };
-                    photos.push(photo);
-                    savePhotos();
-                    renderPhotos();
-                };
-                reader.readAsDataURL(file);
-            });
-            
-            photoInput.value = '';
-        });
-
-        // Save to localStorage
-        function savePhotos() {
-            localStorage.setItem('nicotown-photos', JSON.stringify(photos));
-        }
-
-        function saveAlbums() {
-            localStorage.setItem('nicotown-albums', JSON.stringify(albums));
-        }
+        const photosSection = document.getElementById('photos-section');
 
         // Render albums
         function renderAlbums() {
-            const addButton = albumsGrid.querySelector('.add-album-btn');
-            const existingAlbums = albumsGrid.querySelectorAll('.album-card:not([data-album="all"])');
-            existingAlbums.forEach(card => card.remove());
-
+            albumsGrid.innerHTML = '';
+            
             albums.forEach(album => {
-                const count = photos.filter(p => p.album === album.id).length;
+                const count = album.id === 'all' 
+                    ? photos.length 
+                    : photos.filter(p => p.album === album.id).length;
+                
                 const card = document.createElement('div');
                 card.className = 'album-card';
                 if (currentAlbum === album.id) card.classList.add('active');
-                card.dataset.album = album.id;
                 card.innerHTML = `
                     <div class="album-name">${album.name}</div>
                     <div class="album-count">${count} photo${count !== 1 ? 's' : ''}</div>
                 `;
                 card.onclick = () => selectAlbum(album.id);
-                albumsGrid.insertBefore(card, addButton);
+                albumsGrid.appendChild(card);
             });
-
-            // Update all photos count
-            document.getElementById('all-count').textContent = `${photos.length} photo${photos.length !== 1 ? 's' : ''}`;
         }
 
         // Select album
         function selectAlbum(albumId) {
             currentAlbum = albumId;
-            document.querySelectorAll('.album-card').forEach(card => {
-                card.classList.toggle('active', card.dataset.album === albumId);
-            });
+            renderAlbums();
             renderPhotos();
         }
 
@@ -491,58 +353,22 @@
                 return;
             }
 
-            photosSection.innerHTML = '<div class="photos-grid" id="photos-grid"></div>';
-            const grid = document.getElementById('photos-grid');
+            photosSection.innerHTML = '<div class="photos-grid"></div>';
+            const grid = photosSection.querySelector('.photos-grid');
 
             filteredPhotos.forEach(photo => {
                 const card = document.createElement('div');
                 card.className = 'photo-card';
                 card.innerHTML = `
-                    <img src="${photo.data}" alt="Photo">
-                    <button class="delete-photo" onclick="deletePhoto('${photo.id}')">&times;</button>
+                    <img src="${photo.path}" alt="${photo.name}">
+                    <div class="photo-name">${photo.name}</div>
                 `;
                 grid.appendChild(card);
             });
-
-            renderAlbums();
-        }
-
-        // Delete photo
-        function deletePhoto(photoId) {
-            if (confirm('Delete this photo?')) {
-                photos = photos.filter(p => p.id !== parseFloat(photoId));
-                savePhotos();
-                renderPhotos();
-            }
-        }
-
-        // Album modal
-        function openNewAlbumModal() {
-            document.getElementById('album-modal').classList.add('active');
-            document.getElementById('album-name-input').value = '';
-            document.getElementById('album-name-input').focus();
-        }
-
-        function closeAlbumModal() {
-            document.getElementById('album-modal').classList.remove('active');
-        }
-
-        function createAlbum() {
-            const name = document.getElementById('album-name-input').value.trim();
-            if (!name) return;
-
-            const album = {
-                id: 'album-' + Date.now(),
-                name: name
-            };
-
-            albums.push(album);
-            saveAlbums();
-            renderAlbums();
-            closeAlbumModal();
         }
 
         // Initialize
+        renderAlbums();
         renderPhotos();
     </script>
 </body>
