@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <manialink>
+    <timeout>0</timeout>
+    <type>default</type>
     <quad posn="0 0 -1" sizen="320 200" halign="center" valign="center" bgcolor="000"/>
     <label posn="0 0 0" halign="center" valign="center" style="TextTitle1" text="fart" textcolor="fff"/>
 </manialink>
