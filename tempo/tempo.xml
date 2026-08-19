@@ -30,7 +30,7 @@
 	<quad posn="-0.2 5 3" sizen="0.4 26" style="Bgs1InRace" substyle="BgSlider" />
 
 	<label posn="-42 3 3" sizen="40 5" style="TextValueMedium" text="World Rank: 391" halign="left" />
-	<label posn="-42 -2.5 3" sizen="40 5" style="TextValueMedium" text="Skill Points: 2.1m" halign="left" />
+	<label posn="-42 -2.5 3" sizen="40 5" style="TextValueMedium" text="Skill Points: 2.7m" halign="left" />
 	<label posn="-42 -8 3" sizen="40 5" style="TextValueMedium" text="Wins: 114.4k" halign="left" />
 	<label posn="-42 -13.5 3" sizen="40 5" style="TextValueMedium" text="Losses: 9.5m" halign="left" />
 
